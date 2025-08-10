@@ -100,7 +100,7 @@ dist
 # vuepress build output
 .vuepress/dist
 
-# Serverless directories
+# Serverless directoriesS
 .serverless/
 
 # FuseBox cache
