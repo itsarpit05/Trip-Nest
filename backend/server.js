@@ -5,9 +5,11 @@ import express from 'express'
 // This allows you to keep secrets (like MONGO_URI and JWT_SECRET) outside your code.
 
 import cors from 'cors' // helps backend runnig on lssay port 5000 to connect with frontend running on port 3000
-import authroutes from './routes/auth.routes.js';
+import authRoutes from './routes/auth.routes.js';
 import dotenv from 'dotenv'
 import connectDB from './config/db.js';
+import propertyRoutes from './routes/property.routes.js'
+import bookingsRoutes from './routes/bookings.route.js'
 
 
 dotenv.config({
@@ -17,7 +19,9 @@ const app = express();
 connectDB();
 app.use(cors());
 app.use(express.json()) // without this req.body will be undefined when sending JSON from frontend
-app.use('/api/auth', authroutes)
+app.use('/api/auth', authRoutes);
+app.use('/api/properties', propertyRoutes);
+app.use('/api/bookings',bookingsRoutes);
 
 // mongoose.connect(process.env.MONGO_URI)
 // .then(()=>console.log('MongoDB connected'))
