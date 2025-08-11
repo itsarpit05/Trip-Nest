@@ -5,8 +5,6 @@ import { User } from '../models/user.models.js';
 
 
 
-
-
 export const createUser = async(req,res)=>{
   const {name,email,password} = req.body //extracts name ,email and password from the request body sent by the client
 
@@ -22,7 +20,7 @@ export const createUser = async(req,res)=>{
    
        const hashedPassword = await bcrypt.hash(password,10)
    
-       user = await User.create({name,email,password:hashedPassword})
+       user = await User.create({name,email,password:hashedPassword,role})
        res
        .status(201)
        .json({msg:"User registered successfully"})
