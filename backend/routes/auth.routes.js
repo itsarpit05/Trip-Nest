@@ -5,7 +5,7 @@ import { createUser, getUser, loginUser ,logout,refreshAccessToken} from "../con
 const router = Router();
 
 
-router.post('/',createUser)
+router.post('/signup',createUser)
 router.post('/login',loginUser)
 router.get('/me',verifyToken,getUser)
 router.post('/refresh', refreshAccessToken);
