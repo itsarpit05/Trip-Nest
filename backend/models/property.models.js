@@ -21,7 +21,7 @@ const propertySchema = mongoose.Schema({
     country: String,
     zipCode: String,
     },
-    price:{
+    pricePerNight:{
         type: Number,
         required: true,
     },

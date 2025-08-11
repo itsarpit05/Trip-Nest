@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 export const verifyToken = (req,res,next)=>{
   const token = req.header("Authorization")?.replace("Bearer ","")
    if(!token) {
-    res
+   return res
     .status(401)
     .json({msg:"Access denied no token provided"})
    }

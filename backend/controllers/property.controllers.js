@@ -59,7 +59,7 @@ export const updateProperty = async (req, res) => {
         const property = await Property.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!property) return res.status(404).json({ message: "Property not found" });
           if (property.owner.toString() !== req.user.id) {
-      return res.status(403).json({ msg: "Not authorized to update this property" });
+      return res.status(403).json({ msg: "Not authorized to update this property" }); // to prevent self booking by host
     }
         res.json(property);
     } catch (err) {
@@ -74,6 +74,9 @@ export const deleteProperty = async(req,res)=>{
     try {
         const property = await Property.findByIdAndDelete(req.params.id);
          if (!property) return res.status(404).json({ message: "Property not found" });
+           if (property.owner.toString() !== req.user.id) {
+            return res.status(403).json({ msg: "Not authorized to delete this property" });
+        }
         res.json({msg:"Property deleted successfully"});
     } catch (error) {
         res.status(500).json({ error: error.message });
