@@ -18,7 +18,7 @@ const userSchema = mongoose.Schema(
       },
       role:{
       type:String,
-      enum:["host","guest","admin"],
+      enum:["host","guest"],
       default:"guest"
       },
       refreshToken: {

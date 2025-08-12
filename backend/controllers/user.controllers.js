@@ -53,13 +53,13 @@ export const loginUser = async(req,res)=>{
         .json({msg:"Invalid credentials"})
     }
     const accesstoken = jwt.sign(
-        {id:user._id},
+        {id:user._id,role: user.role},
         process.env.JWT_SECRET,
         {expiresIn:'1h'})
 
 
    const refreshToken = jwt.sign(
-    {id:user._id},
+    {id:user._id,role: user.role},
     process.env.REFRESH_TOKEN_SECRET,
     {expiresIn:"7d"}
 )

@@ -68,7 +68,6 @@ export const updateProperty = async (req, res) => {
 };
 
 // deletes a property
-
 export const deleteProperty = async(req,res)=>{
 
     try {

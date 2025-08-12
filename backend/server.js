@@ -1,3 +1,4 @@
+import dotenv from 'dotenv'
 import express from 'express'
 // import mongoose from 'mongoose' // Object data modelling library for mongoDB
 // import dotenv from 'dotenv'  Imports dotenv, a package that loads environment variables from a .env file into process.env.
@@ -6,7 +7,7 @@ import express from 'express'
 
 import cors from 'cors' // helps backend runnig on lssay port 5000 to connect with frontend running on port 3000
 import authRoutes from './routes/auth.routes.js';
-import dotenv from 'dotenv'
+
 import connectDB from './config/db.js';
 import propertyRoutes from './routes/property.routes.js'
 import bookingsRoutes from './routes/bookings.route.js'
