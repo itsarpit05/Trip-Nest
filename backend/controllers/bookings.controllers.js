@@ -9,13 +9,13 @@ export const createBooking = async (req, res) => {
   try {
     const { property, checkin, checkout, guests } = req.body;
 
-    // 1. Get property details
+    //  Get property details
     const foundProperty = await Property.findById(property);
     if (!foundProperty) {
       return res.status(404).json({ error: "Property not found" });
     }
 
-    // 2. Date objects
+    //  Date objects
     const checkinDate = new Date(checkin);
     const checkoutDate = new Date(checkout);
 
@@ -23,7 +23,7 @@ export const createBooking = async (req, res) => {
       return res.status(400).json({ error: "Check-out must be after check-in" });
     }
 
-    // 3. Check date overlap
+    // Check date overlap
     const overlappingBooking = await Bookings.findOne({
       property,
       $or: [
@@ -36,13 +36,13 @@ export const createBooking = async (req, res) => {
       return res.status(400).json({ error: "Dates overlap with an existing booking" });
     }
 
-    // 4. Calculate nights
+    //  Calculate nights
     const nights = Math.ceil((checkoutDate - checkinDate) / (1000 * 60 * 60 * 24));
 
-    // 5. Calculate price
+    //  Calculate price
     const totalPrice = nights * foundProperty.pricePerNight;
 
-    // 6. Save booking
+    //  Save booking
     const booking = new Bookings({
       property,
       user: req.user.id,

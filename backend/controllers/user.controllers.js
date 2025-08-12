@@ -52,33 +52,22 @@ export const loginUser = async(req,res)=>{
         .status(401)
         .json({msg:"Invalid credentials"})
     }
-    const accesstoken = jwt.sign(
+    const token = jwt.sign(
         {id:user._id,role: user.role},
         process.env.JWT_SECRET,
         {expiresIn:'1h'})
 
 
-   const refreshToken = jwt.sign(
-    {id:user._id,role: user.role},
-    process.env.REFRESH_TOKEN_SECRET,
-    {expiresIn:"7d"}
-)
-    
-    user.refreshToken = refreshToken;
-    await user.save();
-  
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "Strict",
-        path: "/api/auth"
-    });
+    const userResponse = user.toObject();
+    delete userResponse.password;
 
+   res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/" // Make the cookie available to the entire site
+        }).status(200).json(userResponse);
 
-        const safeUser = await User.findById(user._id).select("-password -refreshToken");
-
-        res
-        .json({accesstoken,user:safeUser})
 
   } catch (err) {
     res
@@ -100,48 +89,10 @@ export const getUser =  async (req, res) => {
 
 // logout 
 export const logout = async (req, res) => {
-   try {
-     const refreshToken = req.cookies.refreshToken;
-     if (refreshToken) {
-       //// verify first (try..catch not necessary because jwt.verify throws)
-         const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-         await User.findByIdAndUpdate(decoded.id, { refreshToken: null });
-     }
  
-     res.clearCookie("refreshToken", { path: "/api/auth" });
-     res.json({ message: "Logged out" });
-   } catch (error) {
-     res.clearCookie("refreshToken", { path: "/api/auth" });
-      return res.status(500).json({ msg: "Logout failed", error: error.message });
-   }
+    res.clearCookie("token", { path: "/" });
+    res.status(200).json({ message: "Logged out successfully" });
+
 };
 
 
-
-
-// Refresh token route
-export const refreshAccessToken = async (req, res) => {
-  try{
-  const refreshToken = req.cookies.refreshToken;
-  if (!refreshToken) return res.status(401).json({ msg: "No refresh token" });
-
-  
-    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-
-    const user = await User.findById(decoded.id);
-    if (!user || user.refreshToken !== refreshToken) {
-      return res.status(403).json({ msg: "Invalid refresh token" });
-    }
-
-    const newAccessToken = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' }
-    );
-   
-    //keep response key name consistent with login (accesstoken)
-    res.json({ accessToken: newAccessToken });
-  } catch (err) {
-    res.status(403).json({ msg: "Refresh token expired or invalid" });
-  }
-};

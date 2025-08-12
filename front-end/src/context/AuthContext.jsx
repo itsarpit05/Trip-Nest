@@ -2,48 +2,48 @@ import React, { createContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../services/api.js';
 
-// Create the context
+
 export const AuthContext = createContext();
 
-// Create the provider component
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true); // To handle initial auth check
+    const [loading, setLoading] = useState(true); 
     const navigate = useNavigate();
 
-    // Effect to check for user session on initial load
-    useEffect(() => {
-        const loadUser = () => {
-            const storedUser = localStorage.getItem('user');
-            const token = localStorage.getItem('accesstoken');
-
-            if (storedUser && token) {
-                setUser(JSON.parse(storedUser));
-                // Set the token for all subsequent API requests
-                API.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+   
+     useEffect(() => {
+        const checkLoggedIn = async () => {
+            try {
+                
+                const res = await API.get('/api/auth/me'); 
+                setUser(res.data);
+            } catch (err) {
+                // If the request fails, it means no valid cookie was found
+                setUser(null);
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         };
-        loadUser();
+        checkLoggedIn();
     }, []);
-
+    
     // Login function
     const login = (userData) => {
-        // The user object from the backend now includes the role
-        localStorage.setItem('user', JSON.stringify(userData.user));
-        localStorage.setItem('accesstoken', userData.accesstoken);
-        API.defaults.headers.common['Authorization'] = `Bearer ${userData.accesstoken}`;
-        setUser(userData.user);
-        navigate('/'); // Redirect to home on login
+        
+        setUser(userData);
+        navigate('/');
     };
 
     // Logout function
-    const logout = () => {
-        localStorage.removeItem('user');
-        localStorage.removeItem('accesstoken');
-        delete API.defaults.headers.common['Authorization'];
-        setUser(null);
-        navigate('/login'); // Redirect to login on logout
+    const logout = async () => {
+       
+         try {
+            await API.post('/api/auth/logout'); // This will clear the cookie on the backend
+            setUser(null);
+            navigate('/login');
+        } catch (err) {
+            console.error("Logout failed", err);
+        }
     };
 
     // The value provided to consuming components

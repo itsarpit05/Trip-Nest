@@ -1,16 +1,12 @@
 import dotenv from 'dotenv'
 import express from 'express'
-// import mongoose from 'mongoose' // Object data modelling library for mongoDB
-// import dotenv from 'dotenv'  Imports dotenv, a package that loads environment variables from a .env file into process.env.
-
-// This allows you to keep secrets (like MONGO_URI and JWT_SECRET) outside your code.
-
-import cors from 'cors' // helps backend runnig on lssay port 5000 to connect with frontend running on port 3000
+import cors from 'cors' 
 import authRoutes from './routes/auth.routes.js';
 
 import connectDB from './config/db.js';
 import propertyRoutes from './routes/property.routes.js'
 import bookingsRoutes from './routes/bookings.route.js'
+import uploadRoutes from './routes/upload.routes.js'
 import cookieParser from 'cookie-parser';
 
 
@@ -20,7 +16,7 @@ dotenv.config({
 const app = express();
 connectDB();
 app.use(cors({
-  origin: process.env.CLIENT_URL || true,
+  origin: process.env.CLIENT_URL ,
   credentials: true
 }));
 app.use(express.json()) // without this req.body will be undefined when sending JSON from frontend
@@ -28,10 +24,7 @@ app.use(cookieParser())
 app.use('/api/auth', authRoutes);
 app.use('/api/properties', propertyRoutes);
 app.use('/api/bookings',bookingsRoutes);
-
-// mongoose.connect(process.env.MONGO_URI)
-// .then(()=>console.log('MongoDB connected'))
-// .catch(err=>console.log(err))
+app.use('/api/upload', uploadRoutes);
 
 app.get('/',(req,res)=>{
     res.send("API is running..")

@@ -20,10 +20,10 @@ const userSchema = mongoose.Schema(
       type:String,
       enum:["host","guest"],
       default:"guest"
-      },
-      refreshToken: {
-         type: String 
-        }
+      }
+      // refreshToken: {
+      //    type: String 
+      //   }
 },{timestamps:true})
 
 

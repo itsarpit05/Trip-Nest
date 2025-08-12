@@ -37,25 +37,7 @@ const propertySchema = mongoose.Schema({
         required: true,
         default:1,
     },     
-    // bookings:{
-    //     type: [{
-    //         user: {
-    //             type: mongoose.Schema.Types.ObjectId,
-    //             ref: 'User',
-    //             required: true
-    //         },
-    //         startDate: {
-    //             type: Date,
-    //             required: true
-    //         },
-    //         endDate: {
-    //             type: Date,
-    //             required: true
-    //         }
-    //     }],
-    //     default: []
-    // }  
-
+   
 },{timestamps:true})
 
 

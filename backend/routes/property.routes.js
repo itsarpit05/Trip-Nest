@@ -1,6 +1,5 @@
 
-// import { Property } from '../models/property.models.js'
-// import { User } from '../models/user.models.js'
+
 import { Router } from 'express'
 import { createProperty,getAllProperties,findProperty,updateProperty,deleteProperty } from '../controllers/property.controllers.js'
 import { verifyToken } from '../middlewares/auth.middleware.js';
