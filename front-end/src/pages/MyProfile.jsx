@@ -10,7 +10,13 @@ const MyProfile = () => {
         return (
             <div className="text-center mt-20">
                 <p>Loading user profile...</p>
-                <p className="text-sm text-gray-500">If you are not redirected, please <Link to="/login" className="underline">log in</Link>.</p>
+                <p className="text-sm text-gray-500">
+                    If you are not redirected, please{' '}
+                    <Link to="/login" className="underline">
+                        log in
+                    </Link>
+                    .
+                </p>
             </div>
         );
     }
@@ -25,10 +31,13 @@ const MyProfile = () => {
                     </div>
 
                     {/* User Details */}
-                    <h1 className="text-3xl font-bold text-gray-800">{user.name}</h1>
+                    <h1 className="text-3xl font-bold text-gray-800">
+                        {user.name}
+                    </h1>
                     <p className="text-md text-gray-500 mt-1">{user.email}</p>
                     <span className="mt-3 px-3 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded-full">
-                        {user.role.charAt(0).toUpperCase() + user.role.slice(1)} Account
+                        {user.role.charAt(0).toUpperCase() + user.role.slice(1)}{' '}
+                        Account
                     </span>
                 </div>
 

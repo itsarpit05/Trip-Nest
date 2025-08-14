@@ -7,7 +7,6 @@ const ProtectedRoute = ({ children, role }) => {
     const { isAuthenticated, user, isLoading } = useContext(AuthContext);
     const location = useLocation();
 
- 
     if (isLoading) {
         return <div>Loading...</div>;
     }
@@ -17,7 +16,6 @@ const ProtectedRoute = ({ children, role }) => {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
-    
     if (role && user.role !== role) {
         return <Navigate to="/" state={{ from: location }} replace />;
     }

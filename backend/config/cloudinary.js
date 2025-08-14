@@ -15,7 +15,7 @@ const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
         folder: 'tripnest_properties', // A folder name in your Cloudinary account
-        allowed_formats: ['jpeg', 'png', 'jpg', 'avif','*.webp'],
+        allowed_formats: ['jpeg', 'png', 'jpg', 'avif', '*.webp'],
     },
 });
 
