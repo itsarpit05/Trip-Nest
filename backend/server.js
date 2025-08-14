@@ -2,11 +2,11 @@ import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth.routes.js';
-
 import connectDB from './config/db.js';
 import propertyRoutes from './routes/property.routes.js';
 import bookingsRoutes from './routes/bookings.route.js';
 import uploadRoutes from './routes/upload.routes.js';
+import paymentRoutes from './routes/payment.routes.js'
 import cookieParser from 'cookie-parser';
 
 dotenv.config({
@@ -26,6 +26,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/properties', propertyRoutes);
 app.use('/api/bookings', bookingsRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/payment', paymentRoutes)
 
 app.get('/', (req, res) => {
     res.send('API is running..');

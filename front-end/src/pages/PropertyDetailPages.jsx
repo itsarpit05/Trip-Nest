@@ -41,28 +41,83 @@ const PropertyDetailPage = () => {
         fetchProperty();
     }, [id]); // Re-run the effect if the ID changes
 
-    const handleBooking = async () => {
+     const handleReserveClick = async () => {
         if (!user) {
-            setError('You must be logged in to book a property.');
+            setError("You must be logged in to book a property.");
             return;
         }
+        setError('');
 
         try {
-            const bookingData = {
-                property: id,
-                checkin: dateRange[0].startDate,
-                checkout: dateRange[0].endDate,
-                guests: guests,
-            };
-            await API.post('/api/bookings', bookingData);
-            // On success, navigate to the user's bookings page
-            navigate('/my-bookings', {
-                state: {
-                    message: 'Booking confirmed! Your trip is now booked.',
-                },
+            // 1. Calculate total price on the frontend
+            const checkin = dateRange[0].startDate;
+            const checkout = dateRange[0].endDate;
+            const nights = Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24));
+            if (nights <= 0) {
+                setError("Check-out date must be after check-in date.");
+                return;
+            }
+            const totalPrice = nights * property.pricePerNight;
+
+            // 2. Create an order on the backend
+            const orderResponse = await API.post('/api/payment/order', {
+                propertyId: id,
+                checkin,
+                checkout,
             });
+
+            const { amount, id: order_id, currency } = orderResponse.data;
+
+            // 3. Configure Razorpay options
+            const options = {
+                 key:import.meta.env.VITE_RAZORPAY_KEY_ID , // Get this from your .env or directly
+                amount: amount,
+                currency: currency,
+                name: 'TripNest',
+                description: `Booking for ${property.title}`,
+                order_id: order_id,
+                handler: async function (response) {
+                    // 4. This function is called after successful payment
+                    const verificationData = {
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature,
+                        bookingDetails: {
+                            property: id,
+                            checkin,
+                            checkout,
+                            guests,
+                            price: totalPrice,
+                        }
+                    };
+
+                    // 5. Verify the payment on the backend
+                    const verificationResponse = await API.post('/api/payment/verify', verificationData);
+
+                    if (verificationResponse.data.success) {
+                        // 6. Redirect on successful verification
+                        navigate('/my-bookings', {
+                            state: { message: 'Booking confirmed! Your trip is now booked.' }
+                        });
+                    } else {
+                        setError('Payment verification failed. Please contact support.');
+                    }
+                },
+                prefill: {
+                    name: user.name,
+                    email: user.email,
+                },
+                theme: {
+                    color: '#FD5B61'
+                }
+            };
+
+            // 7. Open the Razorpay checkout pop-up
+            const paymentObject = new window.Razorpay(options);
+            paymentObject.open();
+
         } catch (err) {
-            setError(err.response?.data?.msg || 'Failed to create booking.');
+            setError(err.response?.data?.msg || "An error occurred. Please try again.");
         }
     };
 
@@ -264,7 +319,7 @@ const PropertyDetailPage = () => {
                             />
                         </div>
                         <button
-                            onClick={handleBooking}
+                            onClick={handleReserveClick}
                             className="mt-4 w-full bg-pink-600 text-white font-bold py-3 rounded-lg hover:bg-pink-700 transition"
                         >
                             Reserve
