@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext.jsx';
 
@@ -7,7 +7,7 @@ import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
 import HostPropertyPage from './pages/HostPropertyPage.jsx';
 import MyBookingsPage from './pages/MyBookingsPage.jsx';
-import PropertyDetailPage from './pages/propertyDetailPages.jsx';
+import PropertyDetailPage from './pages/PropertyDetailPage.jsx';
 import MyProfile from './pages/MyProfile.jsx';
 import About from './pages/About.jsx';
 import Contact from './pages/Contact.jsx';

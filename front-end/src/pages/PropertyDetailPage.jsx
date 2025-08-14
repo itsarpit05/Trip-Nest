@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import API from '../services/api';
+import API from '../services/api.js';
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
