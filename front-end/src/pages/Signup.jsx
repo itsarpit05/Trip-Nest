@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import React from 'react';
+import API from '../services/api';
 
 export default function Signup() {
     const navigate = useNavigate();
@@ -19,8 +20,8 @@ export default function Signup() {
         setError('');
         try {
             // const avatarUrl = await uploadToCloudinary();
-            const res = await axios.post(
-                'http://localhost:5000/api/auth/signup',
+            const res = await API.post(
+                '/api/auth/signup',
                 { name, email, password, role },
                 { withCredentials: true },
             );
