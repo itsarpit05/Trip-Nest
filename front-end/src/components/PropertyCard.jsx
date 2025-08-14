@@ -31,7 +31,7 @@ const PropertyCard = ({ property }) => {
                 <h3 className="text-md font-semibold text-gray-800">{property.title}</h3>
                 <p className="text-sm text-gray-500">{location}</p>
                 <p className="mt-1 text-md">
-                    <span className="font-bold">${property.pricePerNight}</span>
+                    <span className="font-bold">₹{property.pricePerNight}</span>
                     <span className="text-gray-600"> / night</span>
                 </p>
             </div>

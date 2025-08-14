@@ -5,6 +5,7 @@ import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { AuthContext } from '../context/AuthContext.jsx';
 import {useParams ,useNavigate } from 'react-router-dom';
+// import max
 
 
 const PropertyDetailPage = () => {
@@ -15,6 +16,7 @@ const PropertyDetailPage = () => {
     const [property, setProperty] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
      const [dateRange, setDateRange] = useState([
         {
@@ -23,6 +25,8 @@ const PropertyDetailPage = () => {
             key: 'selection'
         }
     ]);
+
+    const [guests, setGuests] = useState(1);
 
     useEffect(() => {
         const fetchProperty = async () => {
@@ -50,6 +54,7 @@ const PropertyDetailPage = () => {
                 property: id,
                 checkin: dateRange[0].startDate,
                 checkout: dateRange[0].endDate,
+                 guests: guests,
             };
             await API.post('/api/bookings', bookingData);
             // On success, navigate to the user's bookings page
@@ -62,34 +67,60 @@ const PropertyDetailPage = () => {
         }
     };
 
+   const goToNextImage = () => {
+        const isLastImage = currentImageIndex === property.images.length - 1;
+        const newIndex = isLastImage ? 0 : currentImageIndex + 1;
+        setCurrentImageIndex(newIndex);
+    };
+
+    const goToPreviousImage = () => {
+        const isFirstImage = currentImageIndex === 0;
+        const newIndex = isFirstImage ? property.images.length - 1 : currentImageIndex - 1;
+        setCurrentImageIndex(newIndex);
+    };
 
     if (loading) return <div className="text-center mt-20">Loading...</div>;
     if (error) return <div className="text-center mt-20 text-red-500">{error}</div>;
     if (!property) return <div className="text-center mt-20">Property not found.</div>;
 
-    const { title, address, images, pricePerNight, description, amenities, owner } = property;
+    const { title, address, images, pricePerNight, description, amenities, owner ,maxGuests } = property;
 
     return (
         <div className="container mx-auto p-4 sm:p-6 lg:p-8">
             {/* Property Header */}
-            <div className="mb-4">
+           <div className="mb-4">
                 <h1 className="text-3xl font-bold">{title}</h1>
-                <p className="text-md text-gray-600 underline mt-1">
-                    {`${address.street}, ${address.city}, ${address.state}, ${address.country}`}
-                </p>
-            </div>
-
-            {/* Image Gallery */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-8 rounded-lg overflow-hidden">
-                <div className="col-span-1 md:col-span-2">
-                    <img src={images[0]} alt={title} className="w-full h-full object-cover" />
+                <div className="flex items-center gap-2 text-md text-gray-500 mt-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span>{`${address.street}, ${address.city}, ${address.state}, ${address.country}`}</span>
                 </div>
-                {images.slice(1, 5).map((img, index) => (
-                    <div key={index} className="hidden md:block">
-                        <img src={img} alt={`${title} ${index + 1}`} className="w-full h-full object-cover" />
-                    </div>
-                ))}
             </div>
+          {/* --- NEW: Image Slider --- */}
+            {images && images.length > 0 && (
+                <div className="relative w-full h-96 mb-8 rounded-lg overflow-hidden group">
+                    <img 
+                        src={images[currentImageIndex]} 
+                        alt={`${title} ${currentImageIndex + 1}`}
+                        className="w-full h-full object-cover transition-transform duration-500 ease-in-out"
+                    />
+                    {/* Left Arrow */}
+                    <button onClick={goToPreviousImage} className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white/70 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                    </button>
+                    {/* Right Arrow */}
+                    <button onClick={goToNextImage} className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white/70 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                    {/* Image Counter */}
+                    <div className="absolute bottom-4 right-4 bg-black/50 text-white text-sm px-2 py-1 rounded-md">
+                        {currentImageIndex + 1} / {images.length}
+                    </div>
+                </div>
+            )}
+
 
             {/* Main Content */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -103,11 +134,21 @@ const PropertyDetailPage = () => {
                     {/* Amenities */}
                     <div className="py-6 border-b">
                         <h3 className="text-xl font-semibold mb-4">What this place offers</h3>
-                        <ul className="grid grid-cols-2 gap-2">
-                            {amenities.map((amenity, index) => (
-                                <li key={index} className="flex items-center">{amenity}</li>
-                            ))}
-                        </ul>
+                        {amenities.length > 0 ? (
+                            <ul className="grid grid-cols-2 gap-4">
+                                {amenities.map((amenity, index) => (
+                                    <li key={index} className="flex items-center gap-2 text-gray-700">
+                                        {/* Simple checkmark icon */}
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        {amenity}
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="text-gray-500">No amenities listed for this property.</p>
+                        )}
                     </div>
                 </div>
 
@@ -115,7 +156,7 @@ const PropertyDetailPage = () => {
                 <div className="lg:col-span-1">
                     <div className="sticky top-24 p-6 border rounded-xl shadow-lg">
                         <p className="text-2xl mb-4">
-                            <span className="font-bold">${pricePerNight}</span>
+                            <span className="font-bold">₹{pricePerNight}</span>
                             <span className="text-gray-600"> / night</span>
                         </p>
                         
@@ -129,7 +170,17 @@ const PropertyDetailPage = () => {
                             minDate={new Date()} // Prevent booking past dates
                         />
                     </div>
-
+                        <div className="mt-4">
+                            <label className="block text-sm font-semibold text-gray-700">Guests</label>
+                            <input 
+                                type="number"
+                                value={guests}
+                                onChange={(e) => setGuests(e.target.value)}
+                                min="1"
+                                max={maxGuests || 1} // Use maxGuests from property data
+                                className="mt-1 w-full p-2 border rounded-md"
+                            />
+                        </div>
                         <button onClick={handleBooking} className="mt-4 w-full bg-pink-600 text-white font-bold py-3 rounded-lg hover:bg-pink-700 transition">
                             Reserve
                         </button>

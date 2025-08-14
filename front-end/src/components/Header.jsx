@@ -22,7 +22,7 @@ const Header = () => {
     );
 
     const renderHostControls = () => (
-        <button onClick={() => navigate('/host-property')} className="px-4 py-2 font-semibold transition rounded-full hover:bg-gray-100">
+        <button onClick={() => navigate('/host-property')} className="px-4 py-2 font-semibold transition rounded-full bg-gray-300 hover:bg-pink-500">
             Host your property
         </button>
     );
@@ -31,9 +31,19 @@ const Header = () => {
        
         <header className="flex items-center justify-between p-4 border-b">
             
-            <Link to="/" className="text-2xl font-bold text-pink-500">
-                TRIPNEST
-            </Link>
+           <Link to="/" className="flex items-center gap-2 text-pink-500">
+    {/* This is the new SVG logo */}
+    <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        className="h-8 w-8" 
+        fill="currentColor" 
+        viewBox="0 0 24 24"
+    >
+        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm-2 7h4v3h-4v-3z" />
+    </svg>
+    {/* This is the site name */}
+    <span className="text-2xl font-bold">TripNest</span>
+</Link>
 
           
             <div className="hidden md:block">

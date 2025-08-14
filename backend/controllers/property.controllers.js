@@ -5,9 +5,16 @@ import { Property } from "../models/property.models.js";
 // creating a property
 export const createProperty = async(req,res)=>{
    try {
-       const property = new Property({...req.body
-        ,owner:req.user.id
-       }) // owner is automatically sent from req.user.id
+        const property = new Property({
+            title,
+            description,
+            address,
+            pricePerNight,
+            images,
+            amenities,
+            maxGuests, // The amenities array will now be correctly included
+            owner: req.user.id
+        }); // owner is automatically sent from req.user.id
        await property.save() // saves this created property in mongoDB
        res
        .status(201)

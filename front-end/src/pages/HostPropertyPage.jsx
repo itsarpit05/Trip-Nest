@@ -16,6 +16,22 @@ const HostPropertyPage = () => {
         zipCode: '',
         country: ''
     });
+    const [amenities, setAmenities] = useState([])
+
+      const availableAmenities = [
+    'Wi-Fi',
+    'Kitchen',
+    'Washer',
+    'Dryer',
+    'Air Conditioning',
+    'Heating',
+    'TV',
+    'Free Parking',
+    'Pool',
+    'Hot Tub',
+    'Gym',
+    'EV Charger',
+  ]
 
     const [error, setError] = useState('');
     const handleAddressChange = (e) => {
@@ -25,6 +41,15 @@ const HostPropertyPage = () => {
             [name]: value
         }));
     };
+
+    const handleAmenitiesChange = (e) => {
+    const { value, checked } = e.target
+    if (checked) {
+      setAmenities(prev => [...prev, value])
+    } else {
+      setAmenities(prev => prev.filter(amenity => amenity !== value))
+    }
+  }
 
     const handleImageUpload = async (e) => {
         const file = e.target.files[0];
@@ -59,6 +84,7 @@ const HostPropertyPage = () => {
                 address,
                 pricePerNight,
                 images,
+                amenities,
                 // ... include other property data
             };
             await API.post('/api/properties', propertyData);
@@ -109,7 +135,23 @@ const HostPropertyPage = () => {
                         </div>
                     </div>
                 </div>
-
+                  <div className="border-t pt-6">
+                <h3 className="text-lg font-medium text-gray-900">Amenities</h3>
+             <p className="text-sm text-gray-500">Select all that apply.</p>
+             <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
+               {availableAmenities.map(amenity => (
+                  <label key={amenity} className="flex items-center space-x-3">
+                  <input
+                  type="checkbox"
+                  value={amenity}
+                  onChange={handleAmenitiesChange}
+                  className="h-4 w-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
+                />
+                <span className="text-gray-700">{amenity}</span>
+              </label>
+            ))}
+          </div>
+        </div>
                  <div>
                     <label className="block text-sm font-medium text-gray-700">Price Per Night (INR)</label>
                     <input type="number" value={pricePerNight} onChange={(e) => setPricePerNight(e.target.value)} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />

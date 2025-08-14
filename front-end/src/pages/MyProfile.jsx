@@ -33,7 +33,7 @@ const MyProfile = () => {
                 </div>
 
                 <div className="mt-8 pt-6 border-t text-center">
-                    <p className="text-gray-600">This is your profile page. More features like updating your password or profile picture can be added here in the future.</p>
+                    <p className=""></p>
                 </div>
             </div>
         </div>

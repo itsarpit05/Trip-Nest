@@ -10,6 +10,8 @@ import HostPropertyPage from './pages/HostPropertyPage.jsx';
 import MyBookingsPage from './pages/MyBookingsPage.jsx';
 import PropertyDetailPage from './pages/propertyDetailPages.jsx';
 import MyProfile from './pages/MyProfile.jsx';
+import About from './pages/About.jsx';
+import Contact from './pages/Contact.jsx';
 
 
 import Header from './components/Header.jsx';
@@ -37,6 +39,8 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/property/:id" element={<PropertyDetailPage />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
 
             {/* Protected Routes */}
             <Route 

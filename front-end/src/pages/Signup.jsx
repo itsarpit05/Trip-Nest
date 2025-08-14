@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import React from "react";
 
 export default function Signup(){
 
@@ -11,21 +12,43 @@ export default function Signup(){
    const [role,setRole]= useState("guest")
    const [message,setMessage]= useState("")
    const [error,setError]= useState("")
+  //  const [avatarFile, setAvatarFile] = useState(null);
    
+//    const handleFileChange = (e) => {
+//   setAvatarFile(e.target.files[0]);
+// };
+//  const uploadToCloudinary = async () => {
+//     if (!avatarFile) return ""; // optional: no file uploaded
 
+//     const data = new FormData();
+//     data.append("file", avatarFile);
+//     // data.append("upload_preset", "YOUR_UPLOAD_PRESET"); // replace with your preset
 
+//     const res = await fetch(
+//       "https://api.cloudinary.com/v1_1/dkkvovzts/image/upload", // replace with your cloud name
+//       {
+//         method: "POST",
+//         body: data,
+//       }
+//     );
+
+//     const json = await res.json();
+//     return json.secure_url; // return the uploaded image URL
+//   };
    const handleSubmit = async(e)=>{   // When the user submits the form
          e.preventDefault()
          setMessage("");    // clears if by chance any previous error or message is there
          setError("");
         try {
+            // const avatarUrl = await uploadToCloudinary();
             const res = await axios.post('http://localhost:5000/api/auth/signup',{name,email,password,role},{withCredentials:true})
             setMessage(res.data.msg);  // set message "User registered successfully" as coming from backend
             navigate('/login') // after successful signup redirects to login
             setName("");
             setEmail("");
-            setPassword("");       // after successful signup this resets the form for the user
+            setPassword("");       // after successful signup this resets the form for the use
             setRole("guest");
+            // setAvatarFile(null);
         } catch (err) {
             setError(err.response?.data?.msg || err.response?.data?.error || "Something went wrong");
         }

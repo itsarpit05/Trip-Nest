@@ -105,13 +105,17 @@ const MyBookingsPage = () => {
                                                 <p className="text-md font-bold text-pink-600">{new Date(booking.checkout).toLocaleDateString()}</p>
                                             </div>
                                         </div>
+                                        <div className="mt-2">
+                                            <p className="text-sm font-semibold text-gray-700">Guests</p>
+                                            <p className="text-md">{booking.guests}</p>
+                                        </div>
                                         {user.role === 'host' && (
                                             <div className="mt-3">
                                                  <p className="text-sm font-semibold text-gray-700">Booked by</p>
                                                  <p className="text-md">{booking.user.name} ({booking.user.email})</p>
                                             </div>
                                         )}
-                                        <p className="mt-3 text-lg font-bold text-right text-gray-800">Total: ${booking.price}</p>
+                                        <p className="mt-3 text-lg font-bold text-right text-gray-800">Total:₹{booking.price}</p>
                                     </div>
                                 </div>
                             </div>
@@ -138,7 +142,7 @@ const MyBookingsPage = () => {
             ) : (
                 <div className="text-center py-16 px-6 bg-gray-50 rounded-lg">
                     <h3 className="text-xl font-semibold">No Bookings Found</h3>
-                    <p className="text-gray-500 mt-2">It looks like you haven't made any bookings yet. Start exploring!</p>
+                    <p className="text-gray-500 mt-2">{user.role==='guest'?'It looks like you have not made any bookings yet. Start exploring!':'No one has yet booked your properties'}</p>
                     <Link to="/" className="mt-4 inline-block bg-pink-500 text-white font-bold py-2 px-4 rounded-md hover:bg-pink-600 transition-colors">
                         Browse Properties
                     </Link>
