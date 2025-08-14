@@ -14,9 +14,12 @@ dotenv.config({
 });
 const app = express();
 connectDB();
+const clientURL = process.env.NODE_ENV === 'production' 
+    ? 'https://trip-nest-five.vercel.app' // Your live frontend URL
+    : process.env.CLIENT_URL; 
 app.use(
     cors({
-        origin: process.env.CLIENT_URL,
+        origin: clientURL,
         credentials: true,
     }),
 );
