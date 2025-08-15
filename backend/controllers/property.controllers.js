@@ -4,6 +4,7 @@ import { Bookings } from '../models/bookings.models.js';
 // creating a property
 export const createProperty = async (req, res) => {
     try {
+        const { title, description, address, pricePerNight, images, amenities, maxGuests } = req.body;
         const property = new Property({
             title,
             description,
